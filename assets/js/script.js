@@ -74,27 +74,67 @@ if (form) {
         
 
         // Animated Counter for Stats
-        function animateCounter(element, target, duration = 800) {
+        function animateCounter(element, target, duration = 6000) {
             const hasPlus = element.textContent.includes('+');
-            element.textContent = '0' + (hasPlus ? '+' : '');
+            const startTime = performance.now();
+            const chars = '0123456789';
             
-            const start = 0;
-            const increment = target / (duration / 16); // 60fps
-            let current = start;
-            
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    element.textContent = Math.floor(current) + (hasPlus ? '+' : '');
-                    requestAnimationFrame(updateCounter);
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                if (progress < 0.7) {
+                    // Random numbers phase
+                    const randomNum = Math.floor(Math.random() * 10);
+                    element.textContent = randomNum + (hasPlus ? '+' : '');
+                } else {
+                    // Count to target smoothly
+                    const eased = 1 - Math.pow(1 - (progress - 0.7) / 0.3, 3);
+                    const current = Math.floor(eased * target);
+                    element.textContent = current + (hasPlus ? '+' : '');
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
                 } else {
                     element.textContent = target + (hasPlus ? '+' : '');
                 }
             };
             
-            updateCounter();
+            requestAnimationFrame(animate);
         }
 
+        
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (hamburger && mobileMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+                document.body.style.overflow = hamburger.classList.contains('active') ? 'hidden' : 'auto';
+            });
+
+            // Close menu when clicking on a link
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+
+            // Close menu when clicking outside
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target === mobileMenu) {
+                    hamburger.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
         // Observe stats for animation
         const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -103,7 +143,7 @@ if (form) {
                     statNumbers.forEach((stat, index) => {
                         setTimeout(() => {
                             const target = parseInt(stat.getAttribute('data-target'));
-                            animateCounter(stat, target, 1200);
+                            animateCounter(stat, target, 1500);
                         }, index * 200); // Stagger animation
                     });
                     statsObserver.unobserve(entry.target);

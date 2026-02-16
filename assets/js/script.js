@@ -157,3 +157,15 @@ if (form) {
         if (statsContainer) {
             statsObserver.observe(statsContainer);
         }
+        // Disable right click
+        document.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+        });
+
+        // Disable Save & Print shortcuts
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && (e.key === "s" || e.key === "p")) {
+                e.preventDefault();
+            }
+        });
+

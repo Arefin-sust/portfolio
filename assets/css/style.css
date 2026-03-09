@@ -240,7 +240,7 @@ html {
         }
 
         .hero h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-size: 60px;
             font-weight: 700;
             margin-bottom: 12px;
@@ -576,7 +576,7 @@ html {
 
         /* Section */
         section {
-            margin-bottom: 30px;
+            margin-bottom: 60px;
             width: 100%;
             max-width: 100%;
         }
@@ -587,6 +587,16 @@ html {
             font-weight: 700;
             word-wrap: break-word;
         }
+        section h2::after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 3px;
+            background: var(--accent);
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+        
 
         section > p {
             color: var(--text-secondary);
@@ -625,7 +635,7 @@ html {
         }
 
         .experience-item:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.08);
             border-color: var(--accent);
         }
@@ -695,6 +705,7 @@ html {
             font-weight: 500;
             transition: all 0.3s ease;
         }
+        
 
         .skill-tag:hover {
             background: var(--accent);

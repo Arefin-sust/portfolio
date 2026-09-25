@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://arefin-sust.github.io/portfolio/sitemap.xml

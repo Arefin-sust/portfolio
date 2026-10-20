@@ -4469,3 +4469,44 @@ nav.scrolled {
         margin-top: 2px !important;
     }
 }
+@media (max-width: 768px) {
+
+    /* stop the section from growing wider than the phone */
+    .ks,
+    .ks-top,
+    .ks-stage {
+        max-width: 100%;
+    }
+
+    .ks-top {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ks-stage {
+        width: 100%;
+    }
+
+    /* put the three nodes back on the arc (beats the old rules) */
+    .ks-stage .ks-node {
+        position: absolute;
+        display: block;
+        width: clamp(28px, 7.3cqw, 44px);
+        height: auto;
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    .ks-stage .ks-node.n1 { left: 61.33%; top: 13.33%; }
+    .ks-stage .ks-node.n2 { left: 72.33%; top: 50%; }
+    .ks-stage .ks-node.n3 { left: 61.33%; top: 86.67%; }
+
+    /* the three panel columns can shrink instead of overflowing */
+    .ks-panel {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ks-panel > * {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+}

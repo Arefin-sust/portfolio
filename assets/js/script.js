@@ -528,3 +528,204 @@ document.querySelectorAll('.has-photos').forEach(card => {
         card.classList.toggle('open');
     });
 });
+
+// certifications: some cards on show, the others drift in by themselves
+(function () {
+    const stage = document.getElementById('lrStage');
+    if (!stage) return;
+
+    const cards = [...stage.querySelectorAll('.lr-card')];
+    const ORDER = { 6: [0, 4, 2, 5, 1, 3], 4: [0, 3, 1, 2] };
+    let n = 0, shown = [], waiting = [], step = 0, paused = false;
+
+    function pop(card) {
+        card.classList.remove('enter');
+        void card.offsetWidth;
+        card.classList.add('enter');
+    }
+
+    function layout() {
+        const want = window.innerWidth <= 768 ? 4 : 6;
+        if (want === n) return;
+        n = want;
+        cards.forEach(c => { c.classList.remove('enter', 'leaving'); delete c.dataset.slot; });
+        shown = cards.slice(0, Math.min(n, cards.length));
+        waiting = cards.slice(shown.length);
+        shown.forEach((c, i) => { c.dataset.slot = i + 1; pop(c); });
+        step = 0;
+    }
+
+    function swap() {
+        if (paused || document.hidden || !waiting.length) return;
+        const order = ORDER[n];
+        const i = order[step++ % order.length];
+        if (i >= shown.length) return;
+
+        const out = shown[i];
+        const inc = waiting.shift();
+        out.classList.add('leaving');
+
+        setTimeout(() => {
+            out.classList.remove('leaving', 'enter');
+            delete out.dataset.slot;
+            waiting.push(out);
+
+            inc.dataset.slot = i + 1;
+            pop(inc);
+            shown[i] = inc;
+        }, 600);
+    }
+
+    stage.addEventListener('mouseenter', () => { paused = true; });
+    stage.addEventListener('mouseleave', () => { paused = false; });
+    stage.addEventListener('touchstart', () => {
+        paused = true;
+        clearTimeout(stage._t);
+        stage._t = setTimeout(() => { paused = false; }, 6000);
+    }, { passive: true });
+
+    let rz;
+    window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(layout, 200); });
+
+    layout();
+    setInterval(swap, 3500);
+})();
+
+// certifications: cards hold, then a wind gust swaps the whole set
+(function () {
+    const stage = document.getElementById('lrStage');
+    if (!stage) return;
+
+    const cards = [...stage.querySelectorAll('.lr-card')];
+    const total = cards.length;
+
+    const HOLD = 3000;   // how long a set stays on screen (ms)
+    const ORDER = { 6: [1, 4, 2, 5, 3, 6], 4: [1, 3, 2, 4] };   // left to right
+    let n = 0, p = 0, timer = null, paused = false, busy = false;
+
+    // wind streaks
+    const gust = document.createElement('div');
+    gust.className = 'lr-gust';
+    for (let i = 0; i < 9; i++) {
+        const s = document.createElement('span');
+        s.className = 'streak';
+        s.style.top = (8 + i * 10) + '%';
+        s.style.setProperty('--sd', (i % 3) * 0.12 + 's');
+        s.style.width = (20 + (i % 4) * 8) + '%';
+        gust.appendChild(s);
+    }
+    stage.appendChild(gust);
+
+    const delayOf = slot => ORDER[n].indexOf(+slot) * 0.09 + 's';
+
+    function clear() {
+        cards.forEach(c => { c.classList.remove('enter', 'leaving'); delete c.dataset.slot; });
+    }
+
+    function show() {
+        const count = Math.min(n, total);
+        for (let i = 0; i < count; i++) {
+            const c = cards[(p + i) % total];
+            c.classList.remove('enter', 'leaving');
+            void c.offsetWidth;
+            c.dataset.slot = i + 1;
+            c.style.setProperty('--d', delayOf(i + 1));
+            c.classList.add('enter');
+        }
+    }
+
+    function schedule(ms) {
+        clearTimeout(timer);
+        timer = setTimeout(blow, ms);
+    }
+
+    function blow() {
+        if (total <= n) return;                       // everything already fits
+        if (paused || document.hidden || busy) { schedule(800); return; }
+
+        busy = true;
+        stage.classList.add('gust');
+        stage.querySelectorAll('.lr-card[data-slot]').forEach(c => {
+            c.style.setProperty('--d', delayOf(c.dataset.slot));
+            c.classList.remove('enter');
+            c.classList.add('leaving');
+        });
+
+        setTimeout(() => {
+            clear();
+            p = (p + n) % total;
+            show();
+            stage.classList.remove('gust');
+            busy = false;
+            schedule(HOLD);
+        }, 1450);
+    }
+
+    function layout() {
+        const want = window.innerWidth <= 768 ? 4 : 6;
+        if (want === n) return;
+        n = want;
+        clearTimeout(timer);
+        busy = false;
+        stage.classList.remove('gust');
+        clear();
+        p = 0;
+        show();
+        schedule(HOLD);
+    }
+        // only a card under the cursor stops the wind, not the whole section
+        stage.addEventListener('mouseover', e => {
+            if (e.target.closest('.lr-card')) paused = true;
+        });
+        stage.addEventListener('mouseout', e => {
+            if (e.target.closest('.lr-card') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('.lr-card'))) {
+                paused = false;
+            }
+        });
+
+    stage.addEventListener('touchstart', () => {
+        paused = true;
+        clearTimeout(stage._t);
+        stage._t = setTimeout(() => { paused = false; }, 6000);
+    }, { passive: true });
+
+    let rz;
+    window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(layout, 200); });
+
+    layout();
+})();
+
+// work experience: timeline draws itself while scrolling
+(function () {
+    const tl = document.querySelector('#experience .timeline');
+    if (!tl) return;
+
+    const items = [...tl.querySelectorAll('.experience-item')];
+    let ticking = false;
+
+    function update() {
+        ticking = false;
+        const rect = tl.getBoundingClientRect();
+        const trigger = window.innerHeight * 0.6;      // the line follows this height on screen
+        const reach = trigger - rect.top;              // how far the line has travelled
+        const p = Math.min(Math.max(reach / rect.height, 0), 1);
+        tl.style.setProperty('--p', p.toFixed(4));
+
+        items.forEach(it => {
+            const dotY = it.offsetTop + 30;            // dot position inside the timeline
+            it.classList.toggle('lit', reach >= dotY);
+        });
+    }
+
+    function request() {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+        }
+    }
+
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    window.addEventListener('load', update);
+    update();
+})();

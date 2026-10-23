@@ -4469,44 +4469,788 @@ nav.scrolled {
         margin-top: 2px !important;
     }
 }
+/* ===== Achievements: compact tiles ===== */
+.am-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max(250px, calc((100% - 32px) / 3)), 1fr));
+    gap: 16px;
+}
+
+.am {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px 14px 22px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* red bar on the left */
+.am::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--accent);
+    opacity: 0.35;
+    transition: all 0.3s ease;
+}
+
+.am:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    border-color: var(--accent);
+}
+
+.am:hover::before {
+    opacity: 1;
+    width: 6px;
+}
+
+.am-info {
+    min-width: 0;
+}
+
+.am-info h3 {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-bottom: 2px;
+}
+
+.am-info p {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.am-tag {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    border-radius: 20px;
+    background: rgba(220, 38, 38, 0.06);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: all 0.3s ease;
+}
+
+.am:hover .am-tag {
+    background: var(--accent);
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .am-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .am {
+        padding: 11px 14px 11px 18px;
+    }
+    .am-info h3 { font-size: 15px; }
+    .am-info p { font-size: 12px; }
+    .am-tag { font-size: 10px; padding: 3px 10px; }
+}
+/* ===== Certifications: glass cards, wind swaps ===== */
+.lr { overflow-x: clip; }
+
+.lr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.lr-eyebrow { margin: 0 0 14px !important; }
+
+.lr-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 5vw, 68px);
+    line-height: 0.98;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+.lr-title span { color: var(--accent); }
+.lr-sub { color: var(--text-secondary); font-size: 16px; max-width: 420px; line-height: 1.6; }
+.lr-note { max-width: 300px; margin-top: 8px; color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+
+/* stage */
+.lr-stage {
+    position: relative;
+    height: 620px;
+    margin-top: 56px;
+}
+
+/* soft red glow behind everything */
+.lr-stage::before {
+    content: '';
+    position: absolute;
+    inset: -30px -20px;
+    background:
+        radial-gradient(circle at 18% 72%, rgba(220, 38, 38, 0.32), transparent 42%),
+        radial-gradient(circle at 55% 30%, rgba(248, 90, 90, 0.26), transparent 38%),
+        radial-gradient(circle at 88% 78%, rgba(185, 28, 28, 0.26), transparent 42%);
+    filter: blur(28px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* glossy red orbs, they show through the glass cards */
+.lr-stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle closest-side at 32% 28%, rgba(255,255,255,0.85), rgba(248,113,113,0.8) 30%, rgba(220,38,38,0.85) 62%, rgba(127,29,29,0.9) 96%, transparent 100%) 6% 58% / 210px 210px no-repeat,
+        radial-gradient(circle closest-side at 32% 28%, rgba(255,255,255,0.8), rgba(248,113,113,0.75) 30%, rgba(220,38,38,0.8) 62%, rgba(127,29,29,0.85) 96%, transparent 100%) 54% 100% / 150px 150px no-repeat,
+        radial-gradient(circle closest-side at 32% 28%, rgba(255,255,255,0.8), rgba(248,113,113,0.75) 30%, rgba(220,38,38,0.8) 62%, rgba(127,29,29,0.85) 96%, transparent 100%) 96% 34% / 120px 120px no-repeat;
+    z-index: 1;
+    pointer-events: none;
+    animation: lrOrbs 9s ease-in-out infinite;
+}
+
+@keyframes lrOrbs {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-14px); }
+}
+
+.lr-curve {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.lr-dot {
+    position: absolute;
+    z-index: 1;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.15);
+}
+
+.lr-dot b {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+/* ===== glass cards ===== */
+.lr-card {
+    position: absolute;
+    z-index: 2;
+    width: 29%;
+    padding: 22px 22px 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    backdrop-filter: blur(16px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow:
+        0 18px 40px rgba(185, 28, 28, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+    transform: rotate(var(--r, 0deg));
+    animation: lrWind var(--t, 7s) ease-in-out infinite;
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+/* glossy shine across the glass */
+.lr-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.12) 34%, transparent 52%);
+    pointer-events: none;
+}
+
+.lr-card > * { position: relative; }
+
+.lr-card:not([data-slot]) { display: none; }
+
+/* six places: two staggered rows */
+.lr-card[data-slot="1"] { left: 1%;  top: 24%; --r: -3deg;   --t: 7s; }
+.lr-card[data-slot="2"] { left: 35%; top: 15%; --r: 2.5deg;  --t: 8s; }
+.lr-card[data-slot="3"] { left: 68%; top: 7%;  --r: -2deg;   --t: 6.5s; }
+.lr-card[data-slot="4"] { left: 12%; top: 62%; --r: 2.5deg;  --t: 7.5s; }
+.lr-card[data-slot="5"] { left: 40%; top: 58%; --r: -2.5deg; --t: 8.5s; }
+.lr-card[data-slot="6"] { left: 69%; top: 50%; --r: 3deg;    --t: 7s; }
+
+/* gentle wind sway while the cards are on show */
+@keyframes lrWind {
+    0%, 100% { transform: translate(0, 0) rotate(var(--r)); }
+    30%      { transform: translate(9px, -11px) rotate(calc(var(--r) + 1.8deg)); }
+    65%      { transform: translate(-7px, -4px) rotate(calc(var(--r) - 1.4deg)); }
+}
+
+/* new cards ride in on the wind from the left */
+.lr-card.enter {
+    animation:
+        lrWind var(--t, 7s) ease-in-out infinite,
+        lrIn 1.1s cubic-bezier(0.2, 0.8, 0.25, 1) var(--d, 0s) both;
+}
+
+@keyframes lrIn {
+    from { opacity: 0; translate: -110vw 36px; rotate: -35deg; filter: blur(6px); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; translate: 0 0; rotate: 0deg; filter: blur(0); }
+}
+
+/* the gust blows the cards away to the right */
+.lr-card.leaving {
+    animation:
+        lrWind var(--t, 7s) ease-in-out infinite,
+        lrOut 0.9s cubic-bezier(0.55, 0, 0.9, 0.5) var(--d, 0s) forwards;
+    pointer-events: none;
+}
+
+@keyframes lrOut {
+    from { opacity: 1; translate: 0 0; rotate: 0deg; filter: blur(0); }
+    to   { opacity: 0; translate: 110vw -50px; rotate: 40deg; filter: blur(7px); }
+}
+
+/* hover: everything freezes, card straightens and lifts */
+.lr-card:hover,
+.lr-card:focus-visible {
+    animation-play-state: paused;
+    transform: rotate(0deg) scale(1.05);
+    border-color: var(--accent);
+    box-shadow:
+        0 26px 52px rgba(220, 38, 38, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    z-index: 5;
+    outline: none;
+}
+
+.lr-card img {
+    display: block;
+    height: 38px;
+    max-width: 130px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 16px;
+}
+
+.lr-card h4 { font-size: 17px; line-height: 1.3; margin-bottom: 6px; }
+.lr-card p  { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+
+.lr-card::after {
+    content: '';
+    position: absolute;
+    left: 22px;
+    bottom: 16px;
+    width: 28px;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.35s ease;
+}
+.lr-card:hover::after { width: 70px; }
+
+.lr-ext {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 16px;
+    color: var(--accent);
+    transition: transform 0.3s ease;
+}
+.lr-card:hover .lr-ext { transform: translate(3px, -3px); }
+
+/* ===== wind streaks during a gust ===== */
+.lr-gust {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.lr-gust .streak {
+    position: absolute;
+    left: -30%;
+    width: 28%;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.6), transparent);
+    opacity: 0;
+}
+
+.lr-stage.gust .streak {
+    animation: lrStreak 0.9s ease-in var(--sd, 0s) forwards;
+}
+
+@keyframes lrStreak {
+    0%   { opacity: 0; transform: translateX(0); }
+    20%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(480%); }
+}
+
+/* ===== tablet ===== */
+@media (max-width: 1000px) {
+    .lr-head { flex-direction: column; gap: 4px; }
+    .lr-note { max-width: none; margin-top: 0; }
+    .lr-stage { height: 680px; }
+    .lr-card { width: 31%; padding: 18px 16px 26px; }
+    .lr-card h4 { font-size: 15px; }
+}
+
+/* ===== phone: 4 cards in two rows ===== */
+@media (max-width: 768px) {
+    .lr-title { font-size: 38px; }
+    .lr-stage { height: 440px; margin-top: 24px; }
+    .lr-dot { display: none; }
+    .lr-curve { opacity: 0.35; }
+
+    .lr-card { width: 47%; padding: 16px 14px 24px; border-radius: 14px; }
+    .lr-card img { height: 28px; max-width: 100px; margin-bottom: 10px; }
+    .lr-card h4 { font-size: 13px; }
+    .lr-card p { font-size: 11px; }
+    .lr-card::after { left: 14px; bottom: 12px; width: 22px; }
+    .lr-ext { top: 12px; right: 12px; font-size: 14px; }
+
+    .lr-card[data-slot="1"] { left: 0;   top: 2%;  }
+    .lr-card[data-slot="2"] { left: 52%; top: 0;   }
+    .lr-card[data-slot="3"] { left: 2%;  top: 53%; }
+    .lr-card[data-slot="4"] { left: 53%; top: 50%; }
+
+    .lr-stage::after {
+        background-size: 130px 130px, 100px 100px, 80px 80px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lr-card, .lr-card.enter, .lr-stage::after { animation: none; }
+}
+
+/* ===== 3D floating cards ===== */
+.lr-stage {
+    perspective: 1500px;
+    perspective-origin: 50% 35%;
+}
+
+/* every card gets its own 3D angle: --rx tips it back/forward, --ry turns it, --r spins it */
+.lr-card {
+    transform: translate3d(0, 0, 0) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotateZ(var(--r, 0deg));
+    transform-origin: 50% 50%;
+    box-shadow:
+        14px 26px 46px rgba(185, 28, 28, 0.22),
+        0 4px 10px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform 0.5s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.lr-card[data-slot="1"] { --rx: 10deg;  --ry: 16deg;  --r: -6deg; }
+.lr-card[data-slot="2"] { --rx: 6deg;   --ry: -14deg; --r: 3deg;  }
+.lr-card[data-slot="3"] { --rx: 12deg;  --ry: 12deg;  --r: -3deg; }
+.lr-card[data-slot="4"] { --rx: -6deg;  --ry: 14deg;  --r: 4deg;  }
+.lr-card[data-slot="5"] { --rx: 8deg;   --ry: -16deg; --r: -4deg; }
+.lr-card[data-slot="6"] { --rx: -8deg;  --ry: 12deg;  --r: 5deg;  }
+
+/* wind: the cards drift and also swing toward and away from you */
+@keyframes lrWind {
+    0%, 100% {
+        transform: translate3d(0, 0, 0)
+                   rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--r));
+    }
+    30% {
+        transform: translate3d(10px, -12px, 40px)
+                   rotateX(calc(var(--rx) + 4deg)) rotateY(calc(var(--ry) - 7deg)) rotateZ(calc(var(--r) + 1.8deg));
+    }
+    65% {
+        transform: translate3d(-8px, -4px, -30px)
+                   rotateX(calc(var(--rx) - 3deg)) rotateY(calc(var(--ry) + 6deg)) rotateZ(calc(var(--r) - 1.4deg));
+    }
+}
+
+/* the gust spins the cards in 3D as they leave and arrive */
+@keyframes lrIn {
+    from { opacity: 0; translate: -110vw 36px; rotate: y -70deg; filter: blur(6px); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; translate: 0 0; rotate: y 0deg; filter: blur(0); }
+}
+
+@keyframes lrOut {
+    from { opacity: 1; translate: 0 0; rotate: y 0deg; filter: blur(0); }
+    to   { opacity: 0; translate: 110vw -50px; rotate: y 80deg; filter: blur(7px); }
+}
+
+/* hover: the card turns flat to face you and comes forward */
+.lr-card:hover,
+.lr-card:focus-visible {
+    animation: none;
+    transform: translate3d(0, -8px, 60px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.04);
+    border-color: var(--accent);
+    box-shadow:
+        0 28px 54px rgba(220, 38, 38, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    z-index: 5;
+    outline: none;
+}
+
+/* phone: smaller angles so the text stays easy to read */
+@media (max-width: 768px) {
+    .lr-stage { perspective: 900px; }
+    .lr-card[data-slot="1"] { --rx: 6deg;  --ry: 10deg;  --r: -4deg; }
+    .lr-card[data-slot="2"] { --rx: 4deg;  --ry: -9deg;  --r: 3deg;  }
+    .lr-card[data-slot="3"] { --rx: -4deg; --ry: 9deg;   --r: 3deg;  }
+    .lr-card[data-slot="4"] { --rx: 5deg;  --ry: -10deg; --r: -3deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lr-card { animation: none; }
+}
+
+/* ===== remove the red glow and glossy orbs behind the cards ===== */
+.lr-stage::before,
+.lr-stage::after {
+    display: none;
+}
+
+/* neutral shadow instead of red */
+.lr-card {
+    box-shadow:
+        12px 22px 40px rgba(0, 0, 0, 0.12),
+        0 4px 10px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.lr-card:hover,
+.lr-card:focus-visible {
+    box-shadow:
+        0 24px 48px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ===== fit the whole section in one PC screen ===== */
+@media (min-width: 1001px) {
+    #certifications.lr {
+        margin-bottom: 30px;
+    }
+
+    .lr-title {
+        font-size: clamp(32px, 4.2vw, 52px);
+        margin-bottom: 8px;
+    }
+
+    .lr-eyebrow { margin-bottom: 8px !important; }
+
+    .lr-sub  { font-size: 14px; }
+    .lr-note { font-size: 13px; margin-top: 0; }
+
+    /* stage height follows the screen height */
+    .lr-stage {
+        height: clamp(360px, 54vh, 500px);
+        margin-top: 28px;
+    }
+
+    .lr-card {
+        padding: 16px 18px 24px;
+    }
+
+    .lr-card img {
+        height: 28px;
+        margin-bottom: 10px;
+    }
+
+    .lr-card h4 { font-size: 15px; margin-bottom: 4px; }
+    .lr-card p  { font-size: 12px; }
+    .lr-card::after { left: 18px; bottom: 12px; }
+    .lr-ext { top: 12px; right: 14px; font-size: 14px; }
+
+    /* rows tightened so both fit in the shorter stage */
+    .lr-card[data-slot="1"] { top: 22%; }
+    .lr-card[data-slot="2"] { top: 12%; }
+    .lr-card[data-slot="3"] { top: 3%;  }
+    .lr-card[data-slot="4"] { top: 60%; }
+    .lr-card[data-slot="5"] { top: 55%; }
+    .lr-card[data-slot="6"] { top: 46%; }
+}
+
+/* ===== wind at an angle, disappearing at the screen edge ===== */
+
+/* stop clipping at the section border; the screen edge is the limit */
+.lr {
+    overflow: visible;
+}
+
+html,
+body {
+    overflow-x: clip;   /* no sideways scrollbar from the flying cards */
+}
+
+/* cards leave toward the upper right, along a ~20 degree line */
+@keyframes lrOut {
+    from { opacity: 1; translate: 0 0; rotate: y 0deg; filter: blur(0); }
+    to   { opacity: 0; translate: 115vw -42vw; rotate: y 80deg; filter: blur(7px); }
+}
+
+/* new cards arrive from the lower left, on the same line */
+@keyframes lrIn {
+    from { opacity: 0; translate: -115vw 42vw; rotate: y -70deg; filter: blur(6px); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; translate: 0 0; rotate: y 0deg; filter: blur(0); }
+}
+
+/* wind streaks: as wide as the screen, tilted, same direction */
+.lr-gust {
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    overflow: visible;
+}
+
+.lr-gust .streak {
+    left: -30vw;
+    width: 26vw;
+    margin-top: 10%;
+    transform: rotate(-20deg);
+}
+
+.lr-stage.gust .streak {
+    animation: lrStreakAngle 0.9s ease-in var(--sd, 0s) forwards;
+}
+
+@keyframes lrStreakAngle {
+    0%   { opacity: 0; translate: 0 0; }
+    20%  { opacity: 1; }
+    100% { opacity: 0; translate: 135vw -49vw; }
+}
+
+@media (max-width: 768px) {
+    .lr-gust .streak { transform: rotate(-20deg); }
+}
+
+/* ===== Courses & Certifications title ===== */
+.lr-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.lr-titlebar h2 {
+    margin-bottom: 0;
+}
+
+/* underline that slowly sweeps a red highlight along it */
+.lr-titlebar h2::after {
+    width: 90px;
+    background: linear-gradient(90deg, var(--accent) 0%, #f87171 50%, var(--accent) 100%);
+    background-size: 200% 100%;
+    animation: lrLine 3s linear infinite;
+}
+
+@keyframes lrLine {
+    from { background-position: 0 0; }
+    to   { background-position: -200% 0; }
+}
+
+/* pill with a pulsing dot */
+.lr-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.lr-count b {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.lr-count i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: lrPulse 2s ease-in-out infinite;
+}
+
+@keyframes lrPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+    50%      { box-shadow: 0 0 0 7px rgba(220, 38, 38, 0); }
+}
+
+@media (max-width: 768px) {
+    .lr-count { font-size: 12px; padding: 6px 14px; }
+}
+
+/* ===== chapter labels ===== */
+.chap {
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+/* ===== achievements: story lead-in + live counts ===== */
+.am-lead {
+    margin: 4px 0 18px;
+    max-width: 560px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.am-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.am-stats span {
+    padding: 6px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.am-stats b {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.am-info small {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .am-lead { font-size: 14px; }
+    .am-stats span { font-size: 12px; padding: 5px 12px; }
+}
 @media (max-width: 768px) {
 
-    /* stop the section from growing wider than the phone */
-    .ks,
-    .ks-top,
-    .ks-stage {
-        max-width: 100%;
+    /* two clear columns, each with its own space */
+    .footer-social {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px 16px;
+        max-width: 420px;
+        margin: 0 auto 20px;
+        align-items: start;
+        justify-items: center;
     }
 
-    .ks-top {
-        grid-template-columns: minmax(0, 1fr);
-    }
-
-    .ks-stage {
+    /* each icon + label stays together in its own column */
+    .footer-social > div {
         width: 100%;
-    }
-
-    /* put the three nodes back on the arc (beats the old rules) */
-    .ks-stage .ks-node {
-        position: absolute;
-        display: block;
-        width: clamp(28px, 7.3cqw, 44px);
-        height: auto;
-        aspect-ratio: 1;
-        transform: translate(-50%, -50%);
-    }
-
-    .ks-stage .ks-node.n1 { left: 61.33%; top: 13.33%; }
-    .ks-stage .ks-node.n2 { left: 72.33%; top: 50%; }
-    .ks-stage .ks-node.n3 { left: 61.33%; top: 86.67%; }
-
-    /* the three panel columns can shrink instead of overflowing */
-    .ks-panel {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .ks-panel > * {
         min-width: 0;
+        text-align: center;
+    }
+
+    /* icon circle is a fixed size and sits above its label */
+    .footer-social a {
+        position: static;
+    }
+
+    .footer-social > div > span {
+        display: block;
+        margin-top: 8px;
+        font-size: 13px !important;
+        line-height: 1.4;
         overflow-wrap: anywhere;
+    }
+}
+
+/* stop the leftover hover circle from showing behind the number */
+.footer-social a .social-name {
+    display: none;
+}
+
+/* ===== Work Experience: timeline draws itself as you scroll ===== */
+.timeline {
+    --p: 0;                       /* progress 0 to 1, set by the script */
+}
+
+/* red line that grows down the grey track */
+.timeline::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    width: 2px;
+    height: calc((100% - 16px) * var(--p));
+    background: linear-gradient(180deg, rgba(220, 38, 38, 0.5), var(--accent));
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.45);
+    pointer-events: none;
+}
+
+/* dots start hidden and pop in when the line reaches them */
+.timeline .experience-item::after {
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4), opacity 0.3s ease;
+}
+
+.timeline .experience-item.lit::after {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* cards fade and rise in with their dot */
+.timeline .experience-item {
+    opacity: 0.25;
+    translate: 0 14px;
+    transition: opacity 0.6s ease, translate 0.6s ease, transform 0.4s ease,
+                box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.timeline .experience-item.lit {
+    opacity: 1;
+    translate: 0 0;
+}
+
+/* anyone who prefers less motion sees everything at once */
+@media (prefers-reduced-motion: reduce) {
+    .timeline { --p: 1 !important; }
+    .timeline .experience-item,
+    .timeline .experience-item::after {
+        opacity: 1;
+        translate: none;
+        transform: none;
+        transition: none;
     }
 }
